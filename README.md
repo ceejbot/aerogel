@@ -13,16 +13,21 @@ Then install Aerogel:
 
 `npm install aerogel`
 
+Aerogel uses new-style node streams so it requires node 0.10.x or later.
+
 ## Basics
 
 
 ## API
 
+Aerogel exposes a promises API as well as a standard callback API. If you do not pass a callback to a method, a promise is returned. 
+
+
 ## To-do
 
 ## Contributing
 
-Allman bracing, tabs to indent, camel case. Write tests in Mocha. [mocha-as-promised](https://github.com/domenic/mocha-as-promised) and [chai-as-promised](https://github.com/domenic/chai-as-promised/) are available.
+Allman bracing, tabs to indent, camel case. Write tests in Mocha. [mocha-as-promised](https://github.com/domenic/mocha-as-promised) and [chai-as-promised](https://github.com/domenic/chai-as-promised/) are available. Do cool things.
 
 ## License
 

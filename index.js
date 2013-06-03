@@ -1,5 +1,10 @@
 module.exports =
 {
-	RadioDriver = require('./lib/radio')
+	Copter:      require('./lib/copter'),
+	CrazyDriver: require('./lib/crazydriver'),
+	CrazyPacket: require('./lib/crazypacket'),
+	CrazyRadio:  require('./lib/crazyradio'),
+
+
 };
 
