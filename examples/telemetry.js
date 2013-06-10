@@ -6,6 +6,8 @@ var driver = new Aerogel.CrazyDriver();
 var copter = new Aerogel.Copter(driver);
 process.on('SIGINT', copter.land.bind(copter));
 
+console.log('telemetry logging...');
+
 driver.findCopters()
 .then(function(copters)
 {
@@ -25,29 +27,29 @@ driver.findCopters()
 })
 .then(function()
 {
-	return copter.takeoff();
+	copter.startTelemetry();
+	var t = setTimeout(shutItDown, 10000);
 })
-.then(function()
+.done();
+
+
+function shutItDown()
 {
-	var t = setTimeout(function()
-	{
-		copter.land();
-		copter.shutdown()
-		.then(function(response)
-		{
-			console.log(response);
-			process.exit(0);
-		});
-	}, 1000);
-})
-.fail(function(err)
-{
-	console.log(err);
+	console.log('shutting down');
 	copter.shutdown()
 	.then(function(response)
 	{
-		console.log(response);
-		process.exit(1);
-	});
-})
-.done();
+		console.log('shutting down:', response);
+		process.exit(0);
+	})
+	.fail(function(err)
+	{
+		console.log('error: ', err);
+		copter.shutdown()
+		.then(function(response)
+		{
+			process.exit(1);
+		});
+	})
+	.done();
+}
