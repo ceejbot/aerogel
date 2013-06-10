@@ -27,8 +27,11 @@ driver.findCopters()
 })
 .then(function()
 {
-	copter.startTelemetry();
-	var t = setTimeout(shutItDown, 10000);
+	return copter.startTelemetry();
+}).then(function(res)
+{
+	console.log('back from startTelemetry()', res);
+var t = setTimeout(shutItDown, 10000);
 })
 .done();
 
