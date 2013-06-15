@@ -8,33 +8,6 @@ process.on('SIGINT', copter.land.bind(copter));
 
 console.log('telemetry logging...');
 
-driver.findCopters()
-.then(function(copters)
-{
-	if (copters.length === 0)
-	{
-		console.error('No copters found! Is your copter turned on?');
-		process.exit(1);
-	}
-
-	var uri = copters[0];
-	console.log('Using copter at', uri);
-	return uri;
-})
-.then(function(uri)
-{
-	return copter.connect(uri);
-})
-.then(function()
-{
-	return copter.startTelemetry();
-}).then(function(res)
-{
-	console.log('back from startTelemetry()', res);
-var t = setTimeout(shutItDown, 10000);
-})
-.done();
-
 
 function shutItDown()
 {
@@ -56,3 +29,33 @@ function shutItDown()
 	})
 	.done();
 }
+
+copter.on('ready', function()
+{
+	setTimeout(shutItDown, 20000);
+});
+
+driver.findCopters()
+.then(function(copters)
+{
+	if (copters.length === 0)
+	{
+		console.error('No copters found! Is your copter turned on?');
+		process.exit(1);
+	}
+
+	var uri = copters[0];
+	console.log('Using copter at', uri);
+	return uri;
+})
+.then(function(uri)
+{
+	return copter.connect(uri);
+})
+.then(function()
+{
+	copter.startTelemetry();
+})
+.done();
+
+
