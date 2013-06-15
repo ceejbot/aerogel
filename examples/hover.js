@@ -29,16 +29,16 @@ driver.findCopters()
 })
 .then(function()
 {
-	var t = setTimeout(function()
-	{
-		copter.land();
-		copter.shutdown()
-		.then(function(response)
-		{
-			console.log(response);
-			process.exit(0);
-		});
-	}, 1000);
+	return copter.land();
+})
+.then(function()
+{
+	return copter.shutdown();
+})
+.then(function(response)
+{
+	console.log(response);
+	process.exit(0);
 })
 .fail(function(err)
 {
