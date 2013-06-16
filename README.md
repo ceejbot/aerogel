@@ -17,6 +17,20 @@ Aerogel uses new-style node streams so it requires node 0.10.x or later.
 
 ## Basics
 
+Telemetry information and other copter states are available as events you can listen for.
+
+`stabilizer`
+
+- roll
+- pitch
+- yaw
+
+`motor`
+
+- m1
+- m2
+- m3
+- m4
 
 ## API
 
