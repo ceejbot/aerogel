@@ -52,10 +52,6 @@ driver.findCopters()
 {
 	return copter.connect(uri);
 })
-.then(function()
-{
-	copter.startTelemetry();
-})
 .done();
 
 
