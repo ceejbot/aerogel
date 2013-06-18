@@ -1,7 +1,7 @@
 aerogel
 =======
 
-A node.js control library for the [Crazyflie](http://wiki.bitcraze.se/projects:crazyflie:userguide:index) nano-copter.
+A node.js control library for the [Crazyflie](http://wiki.bitcraze.se/projects:crazyflie:userguide:index) nano-copter. This is a work in progress! Your contributions are more than welcome.
 
 ## Installation
 
@@ -17,27 +17,58 @@ Aerogel uses new-style node streams so it requires node 0.10.x or later.
 
 ## Basics
 
-Telemetry information and other copter states are available as events you can listen for.
+The `copter` object is what your control scripts should manipulate.
 
-`stabilizer`
+A simple script for taking off then landing again immediately looks like this:
 
-- roll
-- pitch
-- yaw
+```javascript
+var Aerogel = require('../index');
 
-`motor`
+var driver = new Aerogel.CrazyDriver();
+var copter = new Aerogel.Copter(driver);
+process.on('SIGINT', copter.land.bind(copter));
 
-- m1
-- m2
-- m3
-- m4
+driver.findCopters()
+.then(function(copters)
+{
+	if (copters.length === 0)
+	{
+		console.error('No copters found! Is your copter turned on?');
+		process.exit(1);
+	}
+
+	var uri = copters[0];
+	console.log('Using copter at', uri);
+	return uri;
+})
+.then(function(uri) { return copter.connect(uri); })
+.then(function() { return copter.takeoff(); })
+.then(function() { return copter.land(); })
+.then(function() { return copter.shutdown(); })
+.done();
+```
+
+## Telemetry
+
+The protocol driver emits telemetry information as events that the copter object listens for. The handlers for these events don't do anything yet, but the plan is that they'll eventually be used to implement higher-level flight control constructs & autonomous goal-seeking.
+
+`copter.handleStabilizerTelemetry()` gets an object with three orientation fields:
+
+- `roll`
+- `pitch`
+- `yaw`
+
+`copter.handleMotorTelemetry()` gets an object with the state of the four motors: `m1`, `m2`, `m3`, and `m4`.
 
 ## API
 
-Aerogel exposes a promises API as well as a standard callback API. If you do not pass a callback to a method, a promise is returned. 
+TODO
 
+Aerogel exposes a promises API at the moment. Eventually I plan to offer a standard callback API as well. If you do not pass a callback to a method, a promise is returned. 
 
 ## To-do
+
+Everything.
 
 ## Contributing
 

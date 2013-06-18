@@ -1,10 +1,31 @@
-var
-	Aerogel = require('../index')
-	;
+var Aerogel = require('../index');
 
 var driver = new Aerogel.CrazyDriver();
 var copter = new Aerogel.Copter(driver);
 process.on('SIGINT', copter.land.bind(copter));
+
+copter.on('ready', function()
+{
+	copter.takeoff()
+	.then(function() { return copter.land(); })
+	.then(function() { return copter.shutdown(); })
+	.then(function(response)
+	{
+		console.log(response);
+		process.exit(0);
+	})
+	.fail(function(err)
+	{
+		console.log(err);
+		copter.shutdown()
+		.then(function(response)
+		{
+			console.log(response);
+			process.exit(1);
+		});
+	})
+	.done();
+});
 
 driver.findCopters()
 .then(function(copters)
@@ -22,32 +43,5 @@ driver.findCopters()
 .then(function(uri)
 {
 	return copter.connect(uri);
-})
-.then(function()
-{
-	return copter.takeoff();
-})
-.then(function()
-{
-	return copter.land();
-})
-.then(function()
-{
-	return copter.shutdown();
-})
-.then(function(response)
-{
-	console.log(response);
-	process.exit(0);
-})
-.fail(function(err)
-{
-	console.log(err);
-	copter.shutdown()
-	.then(function(response)
-	{
-		console.log(response);
-		process.exit(1);
-	});
 })
 .done();
