@@ -68,7 +68,7 @@ Aerogel exposes a promises API at the moment. Eventually I plan to offer a stand
 
 ## To-do
 
-Everything.
+Everything. See the Github issues for my plan about where I'd like this project to go. The Crazyflie is difficult to control with a gamepad, and my theory is that software can eventually fly it better than I can. Also, I dream of a cloud of Crazyflies orbiting my head, all under control of a little Beaglebone or Raspberry PI hidden inside my hat. Maybe you have a dream for your copter!
 
 ## Contributing
 
