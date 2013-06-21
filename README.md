@@ -5,7 +5,7 @@ A node.js control library for the [Crazyflie](http://wiki.bitcraze.se/projects:c
 
 ## Installation
 
-[libusb](http://sourceforge.net/projects/libusb/) is required for the radio driver. On OS X, install with homebrew:
+[libusb](http://sourceforge.net/projects/libusb/) is required for the radio driver. On OS X, install with [homebrew](http://mxcl.github.io/homebrew/):
 
 `brew install libusb`
 
