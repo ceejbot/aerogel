@@ -3,6 +3,9 @@ aerogel
 
 A node.js control library for the [Crazyflie](http://wiki.bitcraze.se/projects:crazyflie:userguide:index) nano-copter. This is a work in progress! Your contributions are more than welcome.
 
+[![Dependencies](https://david-dm.org/ceejbot/aerogel.png)](https://david-dm.org/ceejbot/aerogel) [![NPM version](https://badge.fury.io/js/aerogel.png)](http://badge.fury.io/js/aerogel)
+
+
 ## Installation
 
 [libusb](http://sourceforge.net/projects/libusb/) is required for the radio driver. On OS X, install with [homebrew](http://mxcl.github.io/homebrew/):
