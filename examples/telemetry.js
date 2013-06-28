@@ -30,6 +30,30 @@ function shutItDown()
 	.done();
 }
 
+function flyAndLog()
+{
+	copter.takeoff()
+	.then(function() { return copter.land(); })
+	.then(function() { return copter.shutdown(); })
+	.then(function(response)
+	{
+		console.log(response);
+		process.exit(0);
+	})
+	.fail(function(err)
+	{
+		console.log(err);
+		copter.shutdown()
+		.then(function(response)
+		{
+			console.log(response);
+			process.exit(1);
+		});
+	})
+	.done();
+
+}
+
 copter.on('ready', function()
 {
 	setTimeout(shutItDown, 20000);
