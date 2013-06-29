@@ -29,6 +29,7 @@ copter.on('ready', function()
 	copter.takeoff()
 	.then(function()
 	{
+		console.log('ready to hover');
 		copter.hover();
 		setTimeout(land, 5000);
 	});
