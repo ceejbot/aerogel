@@ -17,6 +17,7 @@
 	],
 	"dependencies":
 	{
+		"leapjs":        "*",
 		"lodash":        "*",
 		"optimist":      "*",
 		"usb":           "*",
