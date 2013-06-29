@@ -17,10 +17,11 @@
 	],
 	"dependencies":
 	{
-		"lodash":    "*",
-		"optimist":  "*",
-		"usb":       "*",
-		"p-promise": "*"
+		"lodash":        "*",
+		"optimist":      "*",
+		"usb":           "*",
+		"p-promise":     "*",
+		"state-machine": "*"
 	},
 	"devDependencies":
 	{
