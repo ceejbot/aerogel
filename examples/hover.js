@@ -18,6 +18,7 @@ function bail()
 	.fail(function(err)
 	{
 		console.log(err);
+		copter.shutdown();
 		return process.exit(0);
 	})
 	.done();
@@ -29,6 +30,7 @@ copter.on('ready', function()
 	copter.takeoff()
 	.then(function()
 	{
+		console.log('ready to hover');
 		copter.hover();
 		setTimeout(land, 5000);
 	});
