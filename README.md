@@ -69,6 +69,10 @@ TODO
 
 Aerogel exposes a promises API at the moment. Eventually I plan to offer a standard callback API as well. If you do not pass a callback to a method, a promise is returned. 
 
+## LeapMotion
+
+If you're lucky enough to have a LeapMotion, there's a rough example of controlling the copter with circle gestures & vertical swipes in `examples/leap1.js`.
+
 ## To-do
 
 Everything. See the Github issues for my plan about where I'd like this project to go. The Crazyflie is difficult to control with a gamepad, and my theory is that software can eventually fly it better than I can. Also, I dream of a cloud of Crazyflies orbiting my head, all under control of a little Beaglebone or Raspberry PI hidden inside my hat. Maybe you have a dream for your copter!

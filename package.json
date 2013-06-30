@@ -1,6 +1,6 @@
 {
 	"name":        "aerogel",
-	"version":     "0.0.1",
+	"version":     "0.0.2",
 	"description": "CrazyFlie control software",
 	"author":      "C J Silverio <ceejceej@gmail.com>",
 	"license":     "MIT",
@@ -13,11 +13,10 @@
 	"repository": "git://github.com/ceejbot/aerogel.git",
 	"keywords":
 	[
-		"nodecopter", "crazyflie", "quadcopter", "nanocopter"
+		"nodecopter", "crazyflie", "quadcopter", "nanocopter", "leapmotion"
 	],
 	"dependencies":
 	{
-		"leapjs":        "*",
 		"lodash":        "*",
 		"optimist":      "*",
 		"usb":           "*",
@@ -30,6 +29,10 @@
 		"chai-as-promised":  "*",
 		"jshint":            "*",
 		"mocha-as-promised": "*"
+	},
+	"optionalDependencies":
+	{
+		"leapjs": "*"
 	},
 	"engines":
 	{
