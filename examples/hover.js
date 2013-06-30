@@ -18,6 +18,7 @@ function bail()
 	.fail(function(err)
 	{
 		console.log(err);
+		copter.shutdown();
 		return process.exit(0);
 	})
 	.done();

@@ -10,10 +10,10 @@ process.on('SIGINT', land);
 
 var controller = new Leap.Controller(
 {
-  host: '127.0.0.1',
-  port: 6437,
-  enableGestures: true,
-  frameEventName: 'frame'
+	host: '127.0.0.1',
+	port: 6437,
+	enableGestures: true,
+	frameEventName: 'frame'
 });
 controller.on('frame', leaploop);
 
@@ -22,7 +22,6 @@ copter.on('ready', function()
 	console.log('copter ready');
 	controller.connect();
 });
-
 
 /*
 { startPosition: [ 134.616, 391.857, 40.0765 ],
@@ -37,7 +36,6 @@ copter.on('ready', function()
     type: 'swipe' }
 */
 
-
 function leaploop(frame)
 {
 	if (frame.gestures.length > 0)
@@ -46,13 +44,28 @@ function leaploop(frame)
 		if (g.type === 'swipe')
 			handleSwipe(g);
 		else if (g.type === 'circle')
-			handleCircle(g);
+			handleCircle(g, frame);
 	}
 }
 
-function handleCircle(gesture)
+var lastCircle = 0;
+function handleCircle(circle, frame)
 {
-	copter.takeoff();
+	var state = copter.copterStates.currentState();
+	var now = Date.now();
+	if (now - lastCircle < 1000)
+		return;
+
+	if (state === 'flying')
+	{
+		lastCircle = Date.now();
+		copter.land();
+	}
+	else if (state === 'waiting')
+	{
+		lastCircle = Date.now();
+		copter.takeoff();
+	}
 }
 
 function handleSwipe(gesture)
@@ -69,15 +82,14 @@ function handleSwipe(gesture)
 	if (gesture.direction[1] < 0)
 	{
 		console.log('swipe down', scaledSpeed);
-		console.log(currentThrust);
 		copter.thrust = currentThrust - scaledSpeed;
 	}
 	else
 	{
 		console.log('swipe up', gesture.speed);
-		console.log(currentThrust);
 		copter.thrust = currentThrust + scaledSpeed;
 	}
+
 }
 
 function land()
@@ -86,7 +98,6 @@ function land()
 	.then(function() { return copter.shutdown(); })
 	.then(function(response)
 	{
-		console.log(response);
 		process.exit(0);
 	})
 	.fail(function(err)
@@ -95,7 +106,6 @@ function land()
 		copter.shutdown()
 		.then(function(response)
 		{
-			console.log(response);
 			process.exit(1);
 		});
 	})
