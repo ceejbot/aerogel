@@ -1,40 +1,41 @@
-var
-	Aerogel = require('../index')
-	;
+var Aerogel = require('../index');
 
 var driver = new Aerogel.CrazyDriver();
 var copter = new Aerogel.Copter(driver);
-process.on('SIGINT', copter.land.bind(copter));
+process.on('SIGINT', bail);
 
-console.log('telemetry logging...');
+console.log('just connecting & sitting to log some telemetry info...');
 
-
-function shutItDown()
+function bail()
 {
-	console.log('shutting down');
-	copter.shutdown()
-	.then(function(response)
+	return copter.land()
+	.then(function()
 	{
-		console.log('shutting down:', response);
-		process.exit(0);
+		return copter.shutdown();
+	})
+	.then(function()
+	{
+		return process.exit(0);
 	})
 	.fail(function(err)
 	{
-		console.log('error: ', err);
-		copter.shutdown()
-		.then(function(response)
-		{
-			process.exit(1);
-		});
+		console.log(err);
+		copter.shutdown();
+		return process.exit(0);
 	})
 	.done();
 }
 
-function flyAndLog()
+
+copter.on('ready', function()
 {
-	copter.takeoff()
-	.then(function() { return copter.land(); })
-	.then(function() { return copter.shutdown(); })
+	console.log('got all telemetry & parameters; shutting down');
+	shutdown();
+});
+
+function shutdown()
+{
+	copter.shutdown()
 	.then(function(response)
 	{
 		console.log(response);
@@ -51,13 +52,7 @@ function flyAndLog()
 		});
 	})
 	.done();
-
 }
-
-copter.on('ready', function()
-{
-	setTimeout(shutItDown, 20000);
-});
 
 driver.findCopters()
 .then(function(copters)
@@ -77,5 +72,3 @@ driver.findCopters()
 	return copter.connect(uri);
 })
 .done();
-
-
