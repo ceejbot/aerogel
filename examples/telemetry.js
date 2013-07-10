@@ -29,8 +29,17 @@ function bail()
 
 copter.on('ready', function()
 {
-	console.log('got all telemetry & parameters; shutting down');
-	shutdown();
+	console.log('got all telemetry & parameters');
+
+	var params = copter.driver.parameters.all();
+	// console.log(params);
+
+	copter.driver.parameters.get('cpu.id0')
+	.then(function(value)
+	{
+		console.log('cpu.id0 ==', value);
+		shutdown();
+	});
 });
 
 function shutdown()
@@ -53,6 +62,8 @@ function shutdown()
 	})
 	.done();
 }
+
+setTimeout(shutdown, 30000);
 
 driver.findCopters()
 .then(function(copters)
