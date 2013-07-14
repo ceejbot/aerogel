@@ -5,6 +5,7 @@ A node.js control library for the [Crazyflie](http://wiki.bitcraze.se/projects:c
 
 [![Dependencies](https://david-dm.org/ceejbot/aerogel.png)](https://david-dm.org/ceejbot/aerogel) [![NPM version](https://badge.fury.io/js/aerogel.png)](http://badge.fury.io/js/aerogel)
 
+[![NPM](http://nodei.co/npm/aerogel.png)](http://nodei.co/npm/aerogel/)
 
 ## Installation
 
