@@ -1,63 +1,30 @@
-var
-	Aerogel = require('../index')
-	;
+var Aerogel = require('../index');
 
 var driver = new Aerogel.CrazyDriver();
 var copter = new Aerogel.Copter(driver);
-process.on('SIGINT', copter.land.bind(copter));
+var params;
+process.on('SIGINT', bail);
 
-console.log('telemetry logging...');
+console.log('just connecting & sitting to log some telemetry info...');
 
-
-function shutItDown()
+function bail()
 {
-	console.log('shutting down');
-	copter.shutdown()
-	.then(function(response)
+	console.log('entered bail()');
+	return copter.shutdown()
+	.then(function()
 	{
-		console.log('shutting down:', response);
-		process.exit(0);
-	})
-	.fail(function(err)
-	{
-		console.log('error: ', err);
-		copter.shutdown()
-		.then(function(response)
-		{
-			process.exit(1);
-		});
-	})
-	.done();
-}
-
-function flyAndLog()
-{
-	copter.takeoff()
-	.then(function() { return copter.land(); })
-	.then(function() { return copter.shutdown(); })
-	.then(function(response)
-	{
-		console.log(response);
-		process.exit(0);
+		return process.exit(0);
 	})
 	.fail(function(err)
 	{
 		console.log(err);
-		copter.shutdown()
-		.then(function(response)
-		{
-			console.log(response);
-			process.exit(1);
-		});
+		copter.shutdown();
+		return process.exit(0);
 	})
 	.done();
-
 }
 
-copter.on('ready', function()
-{
-	setTimeout(shutItDown, 20000);
-});
+setTimeout(bail, 30000);
 
 driver.findCopters()
 .then(function(copters)
@@ -76,6 +43,32 @@ driver.findCopters()
 {
 	return copter.connect(uri);
 })
+.then(function()
+{
+	console.log('got all telemetry & parameters');
+
+	params = copter.driver.parameters.all();
+	console.log(params);
+	return copter.driver.parameters.get('pid_attitude.yaw_kd');
+})
+.then(function(value)
+{
+	console.log('pid_attitude.yaw_kd:', value);
+	return copter.shutdown();
+})
+.then(function(response)
+{
+	console.log('Shutdown complete.');
+	process.exit(0);
+})
+.fail(function(err)
+{
+	console.log(err);
+	copter.shutdown()
+	.then(function(response)
+	{
+		console.log(response);
+		process.exit(1);
+	});
+})
 .done();
-
-
