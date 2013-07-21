@@ -5,7 +5,7 @@ A node.js control library for the [Crazyflie](http://wiki.bitcraze.se/projects:c
 
 [![Dependencies](https://david-dm.org/ceejbot/aerogel.png)](https://david-dm.org/ceejbot/aerogel) [![NPM version](https://badge.fury.io/js/aerogel.png)](http://badge.fury.io/js/aerogel)
 
-[![NPM](http://nodei.co/npm/aerogel.png)](http://nodei.co/npm/aerogel/)
+[![NPM](https://nodei.co/npm/aerogel.png)](http://nodei.co/npm/aerogel/)
 
 ## Installation
 
@@ -35,15 +35,15 @@ process.on('SIGINT', copter.land.bind(copter));
 driver.findCopters()
 .then(function(copters)
 {
-	if (copters.length === 0)
-	{
-		console.error('No copters found! Is your copter turned on?');
-		process.exit(1);
-	}
+    if (copters.length === 0)
+    {
+        console.error('No copters found! Is your copter turned on?');
+        process.exit(1);
+    }
 
-	var uri = copters[0];
-	console.log('Using copter at', uri);
-	return uri;
+    var uri = copters[0];
+    console.log('Using copter at', uri);
+    return uri;
 })
 .then(function(uri) { return copter.connect(uri); })
 .then(function() { return copter.takeoff(); })
@@ -52,17 +52,17 @@ driver.findCopters()
 .done();
 ```
 
+Look at the [examples](examples/) directory for more.
+
 ## Telemetry
 
 The protocol driver emits telemetry information as events that the copter object listens for. The handlers for these events don't do anything yet, but the plan is that they'll eventually be used to implement higher-level flight control constructs & autonomous goal-seeking.
 
-`copter.handleStabilizerTelemetry()` gets an object with three orientation fields:
-
-- `roll`
-- `pitch`
-- `yaw`
+`copter.handleStabilizerTelemetry()` gets an object with three orientation fields: `roll`, `pitch`, `yaw`.
 
 `copter.handleMotorTelemetry()` gets an object with the state of the four motors: `m1`, `m2`, `m3`, and `m4`.
+
+`copter.handleAccTelemetry()` gets an object with the state of the accelerometer: `x`, `y`, and `z`. The accelerometer data is available only for 10DOF copters with tip-of-tree firmware.
 
 ## API
 
