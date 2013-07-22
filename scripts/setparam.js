@@ -6,6 +6,7 @@ var optimist = require('optimist')
 		.describe('h', 'show this help message')
 		;
 
+var variables;
 var param = optimist.argv._[0];
 var value = optimist.argv._[1];
 
@@ -14,9 +15,6 @@ if (!param || !value || optimist.argv.h)
 	optimist.showHelp();
 	process.exit(0);
 }
-
-
-
 
 var Aerogel = require('../index');
 
@@ -65,11 +63,11 @@ driver.findCopters()
 {
 	console.log('got all telemetry & parameters');
 
-	params = copter.driver.parameters.all();
-	if (!params[param])
+	variables = copter.driver.parameters.all();
+	if (!variables[param])
 	{
 		console.log('parameter does not exist:', param);
-		console.log(Object.keys(params));
+		console.log(Object.keys(variables));
 		return bail();
 	}
 
