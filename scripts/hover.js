@@ -6,11 +6,7 @@ process.on('SIGINT', bail);
 
 function bail()
 {
-	return copter.land()
-	.then(function()
-	{
-		return copter.shutdown();
-	})
+	return copter.shutdown()
 	.then(function()
 	{
 		return process.exit(0);
@@ -24,17 +20,6 @@ function bail()
 	.done();
 }
 
-
-copter.on('ready', function()
-{
-	copter.takeoff()
-	.then(function()
-	{
-		console.log('ready to hover');
-		copter.hover();
-		setTimeout(land, 5000);
-	});
-});
 
 function land()
 {
@@ -74,5 +59,20 @@ driver.findCopters()
 .then(function(uri)
 {
 	return copter.connect(uri);
+})
+.then(function()
+{
+	return copter.takeoff();
+})
+.then(function()
+{
+	console.log('ready to hover');
+	setTimeout(land, 5000);
+	return copter.hover();
+})
+.fail(function(err)
+{
+	console.log(err);
+	bail();
 })
 .done();
