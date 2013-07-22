@@ -66,7 +66,6 @@ driver.findCopters()
 })
 .then(function()
 {
-	console.log('ready to hover');
 	setTimeout(land, 5000);
 	return copter.hover();
 })
