@@ -1,3 +1,14 @@
+var optimist = require('optimist')
+		.usage('Get telemetry from a Crazyflie.\nUsage: $0 [-c <channel>]')
+		.alias('c', 'channel')
+		.describe('c', 'if more than one copter is found, prefer the one on this channel')
+		.alias('h', 'help')
+		.describe('h', 'show this help message')
+		;
+
+var channel = optimist.argv.c;
+
+
 var Aerogel = require('../index');
 
 var driver = new Aerogel.CrazyDriver();
@@ -26,7 +37,7 @@ function bail()
 
 setTimeout(bail, 30000);
 
-driver.findCopters()
+driver.findCopters(channel)
 .then(function(copters)
 {
 	if (copters.length === 0)
@@ -35,12 +46,24 @@ driver.findCopters()
 		process.exit(1);
 	}
 
-	var uri = copters[0];
-	console.log('Using copter at', uri);
-	return uri;
+	if (copters.length === 1)
+		return copters[0];
+
+	if (optimist.argv.hasOwnProperty('c'))
+	{
+		var patt = new RegExp('\/' + channel + '\/');
+		for (var i = 0; i < copters.length; i++)
+		{
+			if (patt.test(copters[i]))
+				return copters[i];
+		}
+	}
+
+	return copters[0];
 })
 .then(function(uri)
 {
+	console.log('Using copter at', uri);
 	return copter.connect(uri);
 })
 .then(function()
