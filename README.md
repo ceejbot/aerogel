@@ -52,7 +52,7 @@ driver.findCopters()
 .done();
 ```
 
-Look at the [examples](examples/) directory for more.
+Look at the [scripts](scripts/) directory for more.
 
 ## Telemetry
 
@@ -72,7 +72,7 @@ Aerogel exposes a promises API at the moment. Eventually I plan to offer a stand
 
 ## LeapMotion
 
-If you're lucky enough to have a LeapMotion, there's a rough example of controlling the copter with circle gestures & vertical swipes in `examples/leap1.js`.
+If you're lucky enough to have a LeapMotion, there's a rough example of controlling the copter with circle gestures & vertical swipes in `scripts/leap-takeoff.js`.
 
 ## To-do
 
@@ -80,7 +80,9 @@ Everything. See the Github issues for my plan about where I'd like this project 
 
 ## Contributing
 
-Allman bracing, tabs to indent, camel case. Write tests in Mocha. [mocha-as-promised](https://github.com/domenic/mocha-as-promised) and [chai-as-promised](https://github.com/domenic/chai-as-promised/) are available. Do cool things.
+Allman bracing, tabs to indent, camel case. Do cool things.
+
+Aerogel does not currently have any tests worth noting. If you feel inspired, the project needs some. Write tests in Mocha. [mocha-as-promised](https://github.com/domenic/mocha-as-promised) and [chai-as-promised](https://github.com/domenic/chai-as-promised/) are available. 
 
 ## License
 

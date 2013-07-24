@@ -1,27 +1,44 @@
-var
-	_ = require('lodash'),
-	Aerogel = require('../index'),
-	Leap    = require('leapjs').Leap
-	;
+var optimist = require('optimist')
+		.usage('Make a crazyflie hover.\nUsage: $0 [-c <channel>]')
+		.alias('c', 'channel')
+		.describe('c', 'if more than one copter is found, prefer the one on this channel')
+		.alias('h', 'help')
+		.describe('h', 'show this help message')
+		;
+
+var channel = optimist.argv.c;
+
+var Aerogel = require('../index');
+var P = require('p-promise');
 
 var driver = new Aerogel.CrazyDriver();
 var copter = new Aerogel.Copter(driver);
-process.on('SIGINT', land);
+process.on('SIGINT', bail);
 
-var controller = new Leap.Controller(
+function bail()
+{
+	return copter.shutdown()
+	.then(function()
+	{
+		return process.exit(0);
+	})
+	.fail(function(err)
+	{
+		console.log(err);
+		copter.shutdown();
+		return process.exit(0);
+	})
+	.done();
+}
+
+var leap = new Leap.Controller(
 {
 	host: '127.0.0.1',
 	port: 6437,
 	enableGestures: true,
 	frameEventName: 'frame'
 });
-controller.on('frame', leaploop);
-
-copter.on('ready', function()
-{
-	console.log('copter ready');
-	controller.connect();
-});
+leap.on('frame', leaploop);
 
 /*
 { startPosition: [ 134.616, 391.857, 40.0765 ],
@@ -54,17 +71,17 @@ function handleCircle(circle, frame)
 	var state = copter.copterStates.currentState();
 	var now = Date.now();
 	if (now - lastCircle < 1000)
-		return;
+		return P('ignored');
 
 	if (state === 'flying')
 	{
 		lastCircle = Date.now();
-		copter.land();
+		return copter.land();
 	}
 	else if (state === 'waiting')
 	{
 		lastCircle = Date.now();
-		copter.takeoff();
+		return copter.takeoff();
 	}
 }
 
@@ -77,7 +94,7 @@ function handleSwipe(gesture)
 		currentThrust = 10001;
 
 	if (copter.copterStates.currentState() !== 'flying')
-		return;
+		return P('ignored');
 
 	if (gesture.direction[1] < 0)
 	{
@@ -90,6 +107,7 @@ function handleSwipe(gesture)
 		copter.thrust = currentThrust + scaledSpeed;
 	}
 
+	return P(copter.thrust);
 }
 
 function land()
@@ -98,6 +116,7 @@ function land()
 	.then(function() { return copter.shutdown(); })
 	.then(function(response)
 	{
+		console.log(response);
 		process.exit(0);
 	})
 	.fail(function(err)
@@ -106,6 +125,7 @@ function land()
 		copter.shutdown()
 		.then(function(response)
 		{
+			console.log(response);
 			process.exit(1);
 		});
 	})
@@ -121,12 +141,34 @@ driver.findCopters()
 		process.exit(1);
 	}
 
-	var uri = copters[0];
-	console.log('Using copter at', uri);
-	return uri;
+	if (copters.length === 1)
+		return copters[0];
+
+	if (optimist.argv.hasOwnProperty('c'))
+	{
+		var patt = new RegExp('\/' + channel + '\/');
+		for (var i = 0; i < copters.length; i++)
+		{
+			if (patt.test(copters[i]))
+				return copters[i];
+		}
+	}
+
+	return copters[0];
 })
 .then(function(uri)
 {
+	console.log('Using copter at', uri);
 	return copter.connect(uri);
 })
+.then(function()
+{
+	leap.connect();
+})
+.fail(function(err)
+{
+	console.log(err);
+	bail();
+})
 .done();
+
