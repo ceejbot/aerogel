@@ -23,7 +23,11 @@ process.on('SIGINT', bail);
 
 function bail()
 {
-	return copter.shutdown()
+	copter.land()
+	then(function()
+	{
+		return copter.shutdown();
+	})
 	.then(function()
 	{
 		return process.exit(0);
@@ -32,7 +36,7 @@ function bail()
 	{
 		console.log(err);
 		copter.shutdown();
-		return process.exit(0);
+		return process.exit(1);
 	})
 	.done();
 }
@@ -87,12 +91,12 @@ function handleCircle(circle, frame)
 	if (state !== 'waiting')
 	{
 		lastCircle = Date.now();
-		return copter.land();
+		return land();
 	}
 	else if (state === 'waiting')
 	{
 		lastCircle = Date.now();
-		return copter.takeoff();
+		return takeoff();
 	}
 }
 
@@ -119,6 +123,16 @@ function handleSwipe(gesture)
 	}
 
 	return copter.thrust;
+}
+
+function takeoff()
+{
+	return copter.takeoff()
+	.then(function()
+	{
+		setTimeout(land, 5000);
+		return copter.hover();
+	});
 }
 
 function land()
