@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var optimist = require('optimist')
 		.usage('Make a crazyflie hover.\nUsage: $0 [-c <channel>]')
 		.alias('c', 'channel')
@@ -8,8 +10,12 @@ var optimist = require('optimist')
 
 var channel = optimist.argv.c;
 
-var Aerogel = require('../index');
-var P = require('p-promise');
+var
+	_       = require('lodash'),
+	Aerogel = require('../index'),
+	Leap    = require('leapjs'),
+	P       = require('p-promise')
+	;
 
 var driver = new Aerogel.CrazyDriver();
 var copter = new Aerogel.Copter(driver);
@@ -31,33 +37,16 @@ function bail()
 	.done();
 }
 
-var leap = new Leap.Controller(
-{
-	host: '127.0.0.1',
-	port: 6437,
-	enableGestures: true,
-	frameEventName: 'frame'
-});
-leap.on('frame', leaploop);
-
-/*
-{ startPosition: [ 134.616, 391.857, 40.0765 ],
-    position: [ 34.8631, 82.5179, 74.9414 ],
-    direction: [ -0.167425, -0.98032, 0.104602 ],
-    speed: 126.193,
-    id: 45,
-    handIds: [ 1 ],
-    pointableIds: [ 6 ],
-    duration: 192594,
-    state: 'update',
-    type: 'swipe' }
-*/
-
 function leaploop(frame)
 {
+	var hands = frame.hands;
+	var pointables = frame.pointables;
+	var gestures = frame.gestures;
+
 	if (frame.gestures.length > 0)
 	{
 		var g = frame.gestures[0];
+		// console.log(g.type);
 		if (g.type === 'swipe')
 			handleSwipe(g);
 		else if (g.type === 'circle')
@@ -65,15 +54,37 @@ function leaploop(frame)
 	}
 }
 
+var controller = new Leap.Controller(
+{
+	enableGestures: true,
+});
+
+controller.on('ready', function()
+{
+	console.log('leap controller ready');
+});
+
+controller.on('connect', function()
+{
+	console.log('leap controller connected');
+});
+
+controller.on('disconnect', function()
+{
+	console.log('leap controller disconnected');
+});
+
+controller.on('frame', leaploop);
+
 var lastCircle = 0;
 function handleCircle(circle, frame)
 {
 	var state = copter.copterStates.currentState();
 	var now = Date.now();
 	if (now - lastCircle < 1000)
-		return P('ignored');
+		return 'ignored';
 
-	if (state === 'flying')
+	if (state !== 'waiting')
 	{
 		lastCircle = Date.now();
 		return copter.land();
@@ -93,8 +104,8 @@ function handleSwipe(gesture)
 	if (!_.isNumber(currentThrust))
 		currentThrust = 10001;
 
-	if (copter.copterStates.currentState() !== 'flying')
-		return P('ignored');
+	if (copter.copterStates.currentState() !== 'hovering')
+		return 'ignored';
 
 	if (gesture.direction[1] < 0)
 	{
@@ -107,7 +118,7 @@ function handleSwipe(gesture)
 		copter.thrust = currentThrust + scaledSpeed;
 	}
 
-	return P(copter.thrust);
+	return copter.thrust;
 }
 
 function land()
@@ -163,7 +174,8 @@ driver.findCopters()
 })
 .then(function()
 {
-	leap.connect();
+	console.log('connecting the leapmotion controller');
+	controller.connect();
 })
 .fail(function(err)
 {
