@@ -88,12 +88,13 @@ driver.findCopters()
 })
 .then(function()
 {
-	setTimeout(land, 5000);
+	setTimeout(land, 4000);
 	return copter.hover();
 })
 .fail(function(err)
 {
 	console.log(err);
+	console.log(err.stack);
 	bail();
 })
 .done();
