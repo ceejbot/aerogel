@@ -62,13 +62,13 @@ The protocol driver emits telemetry information as events that the copter object
 
 `copter.handleMotorTelemetry()` gets an object with the state of the four motors: `m1`, `m2`, `m3`, and `m4`.
 
-`copter.handleAccTelemetry()` gets an object with the state of the accelerometer: `x`, `y`, and `z`. The accelerometer data is available only for 10DOF copters with tip-of-tree firmware.
+`copter.handleAccTelemetry()` gets an object with the state of the accelerometer: `x`, `y`, and `z`. The accelerometer data is available only for copters running [tip-of-tree firmware](https://bitbucket.org/bitcraze/crazyflie-firmware).
 
 ## API
 
 TODO
 
-Aerogel exposes a promises API at the moment. Eventually I plan to offer a standard callback API as well. If you do not pass a callback to a method, a promise is returned. 
+Aerogel exposes a [promises](https://github.com/rkatic/p) API at the moment. Eventually I plan to offer a standard callback API as well. If you do not pass a callback to a method, a promise is returned. 
 
 ## LeapMotion
 
