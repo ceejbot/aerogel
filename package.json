@@ -1,6 +1,6 @@
 {
 	"name":        "aerogel",
-	"version":     "0.0.4",
+	"version":     "0.0.5",
 	"description": "CrazyFlie control software",
 	"author":      "C J Silverio <ceejceej@gmail.com>",
 	"license":     "MIT",
