@@ -1,6 +1,8 @@
 aerogel
 =======
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ceejbot/aerogel.svg)](https://greenkeeper.io/)
+
 A node.js control library for the [Crazyflie](http://wiki.bitcraze.se/projects:crazyflie:userguide:index) nano-copter. This is a work in progress! Your contributions are more than welcome.
 
 [![Dependencies](https://david-dm.org/ceejbot/aerogel.png)](https://david-dm.org/ceejbot/aerogel) [![NPM version](https://badge.fury.io/js/aerogel.png)](http://badge.fury.io/js/aerogel)
